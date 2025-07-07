@@ -2,10 +2,10 @@
 
 A complete and powerful React hooks library for managing localStorage with advanced features like TTL, cross-tab synchronization, caching, validation, and much more.
 
-![npm version](https://img.shields.io/npm/v/react-hook-localstorage)
-![npm downloads](https://img.shields.io/npm/dm/react-hook-localstorage)
+![npm version](https://img.shields.io/npm/v/react-hooks-localstorage)
+![npm downloads](https://img.shields.io/npm/dm/react-hooks-localstorage)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)
-![License](https://img.shields.io/npm/l/react-hook-localstorage)
+![License](https://img.shields.io/npm/l/react-hooks-localstorage)
 
 ## ✨ Key Features
 
@@ -20,15 +20,15 @@ A complete and powerful React hooks library for managing localStorage with advan
 ## 📦 Installation
 
 ```bash
-npm install react-hook-localstorage
+npm install react-hooks-localstorage
 ```
 
 ```bash
-yarn add react-hook-localstorage
+yarn add react-hooks-localstorage
 ```
 
 ```bash
-pnpm add react-hook-localstorage
+pnpm add react-hooks-localstorage
 ```
 
 ## 🚀 Quick Start
@@ -36,7 +36,7 @@ pnpm add react-hook-localstorage
 ### Main Hook
 
 ```tsx
-import { useLocalStorage } from 'react-hook-localstorage';
+import { useLocalStorage } from 'react-hooks-localstorage';
 
 function MyComponent() {
   const [name, { setValue, removeValue, isExpired }] = useLocalStorage(
@@ -62,7 +62,7 @@ function MyComponent() {
 ### Array Management
 
 ```tsx
-import { useLocalStorageArray } from 'react-hook-localstorage';
+import { useLocalStorageArray } from 'react-hooks-localstorage';
 
 function TodoList() {
   const {
@@ -91,7 +91,7 @@ function TodoList() {
 ### API Caching
 
 ```tsx
-import { useLocalStorageCache } from 'react-hook-localstorage';
+import { useLocalStorageCache } from 'react-hooks-localstorage';
 
 function UserProfile({ userId }) {
   const { data, isLoading, error, refetch } = useLocalStorageCache(
@@ -157,7 +157,7 @@ const [data, { setValue }] = useLocalStorage('key', defaultValue, options);
 ### Object Management
 
 ```tsx
-import { useLocalStorageObject } from 'react-hook-localstorage';
+import { useLocalStorageObject } from 'react-hooks-localstorage';
 
 function UserProfile() {
   const {
@@ -196,7 +196,7 @@ function UserProfile() {
 ### Boolean Toggle
 
 ```tsx
-import { useLocalStorageBoolean } from 'react-hook-localstorage';
+import { useLocalStorageBoolean } from 'react-hooks-localstorage';
 
 function ThemeToggle() {
   const {
@@ -221,7 +221,7 @@ function ThemeToggle() {
 ### Number Operations
 
 ```tsx
-import { useLocalStorageNumber } from 'react-hook-localstorage';
+import { useLocalStorageNumber } from 'react-hooks-localstorage';
 
 function Counter() {
   const {
@@ -252,7 +252,7 @@ function Counter() {
 ### Cross-Component Synchronization
 
 ```tsx
-import { useLocalStorageSync } from 'react-hook-localstorage';
+import { useLocalStorageSync } from 'react-hooks-localstorage';
 
 function ComponentA() {
   const { value, setValue, subscribe } = useLocalStorageSync(
