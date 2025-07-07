@@ -1,6 +1,6 @@
 {
   "name": "react-hook-localstorage",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A set of React hooks for managing localStorage with ease.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
