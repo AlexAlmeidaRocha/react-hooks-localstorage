@@ -4,10 +4,10 @@ A complete and powerful React hooks library for managing localStorage with
 advanced features like TTL, cross-tab synchronization, caching, validation, and
 much more.
 
-[![npm version](https://img.shields.io/npm/v/react-hooks-localstorage)](https://badge.fury.io/js/react-hook-localstorage)
+[![npm version](https://img.shields.io/npm/v/react-hooks-localstorage)](https://badge.fury.io/js/react-hooks-localstorage)
 [![npm downloads](https://img.shields.io/npm/dm/react-hooks-localstorage)](https://www.npmjs.com/package/react-hooks-localstorage)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)](https://www.typescriptlang.org/)
-![License](https://img.shields.io/npm/l/react-hooks-localstorage)
+[![License](https://img.shields.io/npm/l/react-hooks-localstorage)](https://choosealicense.com/licenses/mit/)
 
 ## ✨ Key Features
 
