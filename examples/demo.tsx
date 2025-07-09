@@ -1,22 +1,23 @@
-import React from 'react';
+import React from "react";
+
 import {
+  localStorageManager,
+  localStorageUtils,
   useLocalStorage,
   useLocalStorageArray,
-  useLocalStorageObject,
   useLocalStorageBoolean,
-  useLocalStorageNumber,
   useLocalStorageCache,
-  localStorageUtils,
-  localStorageManager,
-} from '../src/index';
+  useLocalStorageNumber,
+  useLocalStorageObject
+} from "../src/index";
 
 // Example 1: Basic usage with TTL
 export function BasicExample() {
   const [name, { setValue, removeValue, isExpired, getRemainingTime }] =
     useLocalStorage(
-      'user-name',
-      'João Silva',
-      { ttl: 60000 }, // 1 minute
+      "user-name",
+      "João Silva",
+      { ttl: 60000 } // 1 minute
     );
 
   const remainingTime = getRemainingTime();
@@ -34,7 +35,7 @@ export function BasicExample() {
       </div>
       <div className="info">
         <p>Nome atual: {name}</p>
-        <p>Expirado: {isExpired() ? 'Sim' : 'Não'}</p>
+        <p>Expirado: {isExpired() ? "Sim" : "Não"}</p>
         {remainingTime && (
           <p>Tempo restante: {Math.round(remainingTime / 1000)}s</p>
         )}
@@ -59,15 +60,15 @@ export function ArrayExample() {
     updateItem,
     clearArray,
     length,
-    isEmpty,
-  } = useLocalStorageArray<Task>('task-list', []);
+    isEmpty
+  } = useLocalStorageArray<Task>("task-list", []);
 
   const addTask = () => {
     const newTask = {
       id: Date.now(),
       text: `Tarefa ${length + 1}`,
       completed: false,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     };
     addItem(newTask);
   };
@@ -88,17 +89,17 @@ export function ArrayExample() {
       </div>
       <div className="info">
         <p>Total de tarefas: {length}</p>
-        <p>Lista vazia: {isEmpty ? 'Sim' : 'Não'}</p>
+        <p>Lista vazia: {isEmpty ? "Sim" : "Não"}</p>
       </div>
       <div className="task-list">
         {tasks.map((task, index) => (
           <div
             key={task.id}
-            className={`task ${task.completed ? 'completed' : ''}`}
+            className={`task ${task.completed ? "completed" : ""}`}
           >
             <span>{task.text}</span>
             <button onClick={() => toggleTask(index)}>
-              {task.completed ? 'Desmarcar' : 'Completar'}
+              {task.completed ? "Desmarcar" : "Completar"}
             </button>
             <button onClick={() => removeItem(index)}>Remover</button>
           </div>
@@ -116,29 +117,29 @@ export function ObjectExample() {
     updateObject,
     resetObject,
     hasProperty,
-    keys,
-  } = useLocalStorageObject('user-profile', {
-    name: '',
-    email: '',
+    keys
+  } = useLocalStorageObject("user-profile", {
+    name: "",
+    email: "",
     age: 0,
     preferences: {
-      theme: 'light',
-      notifications: true,
-    },
+      theme: "light",
+      notifications: true
+    }
   });
 
   const incrementAge = () => {
-    setProperty('age', userProfile.age + 1);
+    setProperty("age", userProfile.age + 1);
   };
 
   const toggleTheme = () => {
     const newTheme =
-      userProfile.preferences.theme === 'light' ? 'dark' : 'light';
+      userProfile.preferences.theme === "light" ? "dark" : "light";
     updateObject({
       preferences: {
         ...userProfile.preferences,
-        theme: newTheme,
-      },
+        theme: newTheme
+      }
     });
   };
 
@@ -148,12 +149,12 @@ export function ObjectExample() {
       <div className="form">
         <input
           value={userProfile.name}
-          onChange={(e) => setProperty('name', e.target.value)}
+          onChange={(e) => setProperty("name", e.target.value)}
           placeholder="Nome"
         />
         <input
           value={userProfile.email}
-          onChange={(e) => setProperty('email', e.target.value)}
+          onChange={(e) => setProperty("email", e.target.value)}
           placeholder="Email"
         />
         <div>
@@ -167,8 +168,8 @@ export function ObjectExample() {
         <button onClick={resetObject}>Resetar Perfil</button>
       </div>
       <div className="info">
-        <p>Propriedades: {keys.join(', ')}</p>
-        <p>Tem email: {hasProperty('email') ? 'Sim' : 'Não'}</p>
+        <p>Propriedades: {keys.join(", ")}</p>
+        <p>Tem email: {hasProperty("email") ? "Sim" : "Não"}</p>
       </div>
     </div>
   );
@@ -180,11 +181,11 @@ export function BooleanExample() {
     value: isDarkMode,
     toggle,
     setTrue,
-    setFalse,
-  } = useLocalStorageBoolean('dark-mode', false);
+    setFalse
+  } = useLocalStorageBoolean("dark-mode", false);
 
   const { value: isNotificationsEnabled, toggle: toggleNotifications } =
-    useLocalStorageBoolean('notifications', true);
+    useLocalStorageBoolean("notifications", true);
 
   return (
     <div className="example-container">
@@ -210,9 +211,9 @@ export function BooleanExample() {
         </div>
       </div>
       <div className="info">
-        <p>Modo escuro: {isDarkMode ? 'Ativado' : 'Desativado'}</p>
+        <p>Modo escuro: {isDarkMode ? "Ativado" : "Desativado"}</p>
         <p>
-          Notificações: {isNotificationsEnabled ? 'Ativadas' : 'Desativadas'}
+          Notificações: {isNotificationsEnabled ? "Ativadas" : "Desativadas"}
         </p>
       </div>
     </div>
@@ -228,14 +229,14 @@ export function NumberExample() {
     multiply,
     divide,
     reset,
-    clamp,
-  } = useLocalStorageNumber('counter', 0);
+    clamp
+  } = useLocalStorageNumber("counter", 0);
 
   const {
     value: score,
     setValue: setScore,
-    increment: incrementScore,
-  } = useLocalStorageNumber('game-score', 0);
+    increment: incrementScore
+  } = useLocalStorageNumber("game-score", 0);
 
   return (
     <div className="example-container">
@@ -270,33 +271,34 @@ export function CacheExample() {
     error,
     isStale,
     refetch,
-    invalidate,
+    invalidate
   } = useLocalStorageCache(
-    'user-info',
+    "user-info",
     async () => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
+
       return {
         id: 1,
-        name: 'João Silva',
-        email: 'joao@example.com',
-        lastLogin: new Date().toISOString(),
+        name: "João Silva",
+        email: "joao@example.com",
+        lastLogin: new Date().toISOString()
       };
     },
     {
       staleTime: 10000, // 10 seconds
       cacheTime: 60000, // 1 minute
-      refetchOnWindowFocus: true,
-    },
+      refetchOnWindowFocus: true
+    }
   );
 
   return (
     <div className="example-container">
       <h2>API Cache</h2>
       <div className="api-status">
-        <p>Status: {isLoading ? 'Carregando...' : 'Carregado'}</p>
-        <p>Dados antigos: {isStale ? 'Sim' : 'Não'}</p>
-        {error && <p style={{ color: 'red' }}>Erro: {error.message}</p>}
+        <p>Status: {isLoading ? "Carregando..." : "Carregado"}</p>
+        <p>Dados antigos: {isStale ? "Sim" : "Não"}</p>
+        {error && <p style={{ color: "red" }}>Erro: {error.message}</p>}
       </div>
       <div className="actions">
         <button onClick={refetch} disabled={isLoading}>
@@ -319,10 +321,10 @@ export function CacheExample() {
 // Example 7: Storage utilities
 export function UtilitiesExample() {
   const [storageInfo, setStorageInfo] = React.useState(
-    localStorageManager.getStorageInfo(),
+    localStorageManager.getStorageInfo()
   );
   const [isAvailable, setIsAvailable] = React.useState(
-    localStorageUtils.isAvailable(),
+    localStorageUtils.isAvailable()
   );
 
   const refreshInfo = () => {
@@ -332,11 +334,11 @@ export function UtilitiesExample() {
 
   const exportData = () => {
     const data = localStorageUtils.exportData();
-    const blob = new Blob([data], { type: 'application/json' });
+    const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'localStorage-backup.json';
+    a.download = "localStorage-backup.json";
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -351,7 +353,7 @@ export function UtilitiesExample() {
     <div className="example-container">
       <h2>Storage Utilities</h2>
       <div className="info">
-        <p>LocalStorage disponível: {isAvailable ? 'Sim' : 'Não'}</p>
+        <p>LocalStorage disponível: {isAvailable ? "Sim" : "Não"}</p>
         <p>Espaço usado: {(storageInfo.used / 1024).toFixed(2)} KB</p>
         <p>Espaço restante: {(storageInfo.remaining / 1024).toFixed(2)} KB</p>
         <p>Total: {(storageInfo.total / 1024).toFixed(2)} KB</p>

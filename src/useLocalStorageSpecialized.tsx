@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { useLocalStorage } from './useLocalStorage';
-import { LocalStorageOptions } from './localStorage.types';
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { LocalStorageOptions } from "./localStorage.types";
+import { useLocalStorage } from "./useLocalStorage";
 
 /**
  * Hook for caching API responses or expensive computations in localStorage
@@ -14,7 +15,7 @@ export function useLocalStorageCache<T>(
     refetchOnMount?: boolean;
     refetchOnReconnect?: boolean;
     refetchOnWindowFocus?: boolean;
-  } = {},
+  } = {}
 ) {
   const {
     staleTime = 5 * 60 * 1000, // 5 minutes default
@@ -28,7 +29,7 @@ export function useLocalStorageCache<T>(
   const [data, { setValue, removeValue, getCreatedAt, ...methods }] =
     useLocalStorage<T | null>(key, null, {
       ...localStorageOptions,
-      ttl: cacheTime,
+      ttl: cacheTime
     });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -44,33 +45,29 @@ export function useLocalStorageCache<T>(
   // Check if data is stale
   useEffect(() => {
     const createdAt = getCreatedAt();
+
     if (createdAt && data) {
       const age = Date.now() - createdAt;
       setIsStale(age > staleTime);
     }
   }, [data, staleTime, getCreatedAt]);
 
-  const fetchData = useCallback(
-    async (force: boolean = false) => {
-      if (isLoading) return;
+  const fetchData = useCallback(async () => {
+    if (isLoading) return;
 
-      setIsLoading(true);
-      setError(null);
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const result = await fetcherRef.current();
-        setValue(result);
-        setIsStale(false);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error('Failed to fetch data'),
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [isLoading, setValue],
-  );
+    try {
+      const result = await fetcherRef.current();
+      setValue(result);
+      setIsStale(false);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error("Failed to fetch data"));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isLoading, setValue]);
 
   const invalidate = useCallback(() => {
     removeValue();
@@ -78,7 +75,7 @@ export function useLocalStorageCache<T>(
   }, [removeValue]);
 
   const refetch = useCallback(() => {
-    return fetchData(true);
+    return fetchData();
   }, [fetchData]);
 
   // Initial fetch
@@ -98,8 +95,9 @@ export function useLocalStorageCache<T>(
       }
     };
 
-    window.addEventListener('online', handleOnline);
-    return () => window.removeEventListener('online', handleOnline);
+    window.addEventListener("online", handleOnline);
+
+    return () => window.removeEventListener("online", handleOnline);
   }, [refetchOnReconnect, isStale, data, fetchData]);
 
   // Refetch on window focus
@@ -112,8 +110,9 @@ export function useLocalStorageCache<T>(
       }
     };
 
-    window.addEventListener('focus', handleFocus);
-    return () => window.removeEventListener('focus', handleFocus);
+    window.addEventListener("focus", handleFocus);
+
+    return () => window.removeEventListener("focus", handleFocus);
   }, [refetchOnWindowFocus, isStale, fetchData]);
 
   return {
@@ -123,7 +122,7 @@ export function useLocalStorageCache<T>(
     isStale,
     invalidate,
     refetch,
-    ...methods,
+    ...methods
   };
 }
 
@@ -133,15 +132,15 @@ export function useLocalStorageCache<T>(
 export function useLocalStorageSync<T>(
   key: string,
   initialValue: T,
-  options: LocalStorageOptions = {},
+  options: LocalStorageOptions = {}
 ) {
   const [value, { setValue, ...methods }] = useLocalStorage<T>(
     key,
     initialValue,
-    options,
+    options
   );
   const [subscribers, setSubscribers] = useState<Set<(value: T) => void>>(
-    new Set(),
+    new Set()
   );
 
   const subscribe = useCallback((callback: (value: T) => void) => {
@@ -151,6 +150,7 @@ export function useLocalStorageSync<T>(
       setSubscribers((prev) => {
         const newSet = new Set(prev);
         newSet.delete(callback);
+
         return newSet;
       });
     };
@@ -165,14 +165,14 @@ export function useLocalStorageSync<T>(
       // Notify all subscribers
       subscribers.forEach((callback) => callback(valueToStore));
     },
-    [value, setValue, subscribers],
+    [value, setValue, subscribers]
   );
 
   return {
     value,
     setValue: syncedSetValue,
     subscribe,
-    ...methods,
+    ...methods
   };
 }
 
@@ -182,23 +182,25 @@ export function useLocalStorageSync<T>(
 export function useLocalStorageCompressed<T>(
   key: string,
   initialValue: T,
-  options: LocalStorageOptions = {},
+  options: LocalStorageOptions = {}
 ) {
   const compressedOptions: LocalStorageOptions = {
     ...options,
-    serialize: (value: any) => {
+    serialize: (value: unknown) => {
       const jsonString = JSON.stringify(value);
       // Simple compression simulation (in real app, use a proper compression library)
+
       return btoa(jsonString);
     },
     deserialize: (value: string) => {
       try {
         const jsonString = atob(value);
+
         return JSON.parse(jsonString);
       } catch {
         return null;
       }
-    },
+    }
   };
 
   return useLocalStorage<T>(key, initialValue, compressedOptions);
@@ -211,11 +213,11 @@ export function useLocalStorageAutoCleanup() {
   const [cleanupStats, setCleanupStats] = useState({
     lastCleanup: 0,
     itemsRemoved: 0,
-    totalRuns: 0,
+    totalRuns: 0
   });
 
   const runCleanup = useCallback(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     let removedCount = 0;
     const keys = Object.keys(window.localStorage);
@@ -223,8 +225,10 @@ export function useLocalStorageAutoCleanup() {
     keys.forEach((key) => {
       try {
         const item = window.localStorage.getItem(key);
+
         if (item) {
           const data = JSON.parse(item);
+
           if (data.expiresAt && Date.now() > data.expiresAt) {
             window.localStorage.removeItem(key);
             removedCount++;
@@ -238,7 +242,7 @@ export function useLocalStorageAutoCleanup() {
     setCleanupStats((prev) => ({
       lastCleanup: Date.now(),
       itemsRemoved: removedCount,
-      totalRuns: prev.totalRuns + 1,
+      totalRuns: prev.totalRuns + 1
     }));
 
     return removedCount;
@@ -257,6 +261,6 @@ export function useLocalStorageAutoCleanup() {
 
   return {
     cleanupStats,
-    runCleanup,
+    runCleanup
   };
 }

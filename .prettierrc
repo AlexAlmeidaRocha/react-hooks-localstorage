@@ -1,6 +1,18 @@
 {
-  "singleQuote": true,
+  "singleQuote": false,
+  "jsxSingleQuote": false,
+  "trailingComma": "none",
   "printWidth": 80,
+  "proseWrap": "always",
   "tabWidth": 2,
-  "trailingComma": "all"
+  "importOrder": ["^(react|react-dom)$", "^([a-z]|@[a-z])", "", ".*"],
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "overrides": [
+    {
+      "files": ".prettierrc",
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
 }

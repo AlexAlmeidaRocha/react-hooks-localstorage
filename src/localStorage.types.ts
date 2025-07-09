@@ -5,10 +5,10 @@ export type ExpiringLocalStorageValue<T> = {
   version?: string;
 };
 
-export type LocalStorageOptions = {
+export type LocalStorageOptions<T = unknown> = {
   ttl?: number; // Time to live in milliseconds
-  serialize?: (value: any) => string;
-  deserialize?: (value: string) => any;
+  serialize?: (value: T) => string;
+  deserialize?: (value: string) => T;
   syncAcrossTabs?: boolean;
   version?: string; // For data migration
 };
@@ -33,7 +33,11 @@ export type LocalStorageEventDetail<T> = {
 };
 
 export type LocalStorageError = {
-  type: 'QUOTA_EXCEEDED' | 'SERIALIZATION_ERROR' | 'DESERIALIZATION_ERROR' | 'UNKNOWN_ERROR';
+  type:
+    | "QUOTA_EXCEEDED"
+    | "SERIALIZATION_ERROR"
+    | "DESERIALIZATION_ERROR"
+    | "UNKNOWN_ERROR";
   message: string;
   originalError?: Error;
 };

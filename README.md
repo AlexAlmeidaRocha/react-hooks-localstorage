@@ -1,15 +1,18 @@
 # 🚀 React LocalStorage Hook Library
 
-A complete and powerful React hooks library for managing localStorage with advanced features like TTL, cross-tab synchronization, caching, validation, and much more.
+A complete and powerful React hooks library for managing localStorage with
+advanced features like TTL, cross-tab synchronization, caching, validation, and
+much more.
 
-![npm version](https://img.shields.io/npm/v/react-hooks-localstorage)
-![npm downloads](https://img.shields.io/npm/dm/react-hooks-localstorage)
-![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)
+[![npm version](https://img.shields.io/npm/v/react-hooks-localstorage)](https://badge.fury.io/js/react-hook-localstorage)
+[![npm downloads](https://img.shields.io/npm/dm/react-hooks-localstorage)](https://www.npmjs.com/package/react-hooks-localstorage)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)](https://www.typescriptlang.org/)
 ![License](https://img.shields.io/npm/l/react-hooks-localstorage)
 
 ## ✨ Key Features
 
-- 🔄 **Cross-tab synchronization** - Changes automatically reflected across all tabs
+- 🔄 **Cross-tab synchronization** - Changes automatically reflected across all
+  tabs
 - ⏰ **TTL (Time To Live)** - Automatic data expiration
 - 🎯 **Specialized hooks** - For arrays, objects, booleans, numbers
 - 📦 **Smart caching** - For APIs and expensive computations
@@ -36,13 +39,13 @@ pnpm add react-hooks-localstorage
 ### Main Hook
 
 ```tsx
-import { useLocalStorage } from 'react-hooks-localstorage';
+import { useLocalStorage } from "react-hooks-localstorage";
 
 function MyComponent() {
   const [name, { setValue, removeValue, isExpired }] = useLocalStorage(
-    'user-name',
-    'John Doe',
-    { ttl: 24 * 60 * 60 * 1000 }, // 24 hours
+    "user-name",
+    "John Doe",
+    { ttl: 24 * 60 * 60 * 1000 } // 24 hours
   );
 
   return (
@@ -62,19 +65,19 @@ function MyComponent() {
 ### Array Management
 
 ```tsx
-import { useLocalStorageArray } from 'react-hooks-localstorage';
+import { useLocalStorageArray } from "react-hooks-localstorage";
 
 function TodoList() {
   const {
     array: todos,
     addItem,
     removeItem,
-    clearArray,
-  } = useLocalStorageArray('todos', []);
+    clearArray
+  } = useLocalStorageArray("todos", []);
 
   return (
     <div>
-      <button onClick={() => addItem({ id: Date.now(), text: 'New task' })}>
+      <button onClick={() => addItem({ id: Date.now(), text: "New task" })}>
         Add
       </button>
       {todos.map((todo, index) => (
@@ -91,7 +94,7 @@ function TodoList() {
 ### API Caching
 
 ```tsx
-import { useLocalStorageCache } from 'react-hooks-localstorage';
+import { useLocalStorageCache } from "react-hooks-localstorage";
 
 function UserProfile({ userId }) {
   const { data, isLoading, error, refetch } = useLocalStorageCache(
@@ -99,8 +102,8 @@ function UserProfile({ userId }) {
     () => fetch(`/api/users/${userId}`).then((res) => res.json()),
     {
       staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 30 * 60 * 1000, // 30 minutes
-    },
+      cacheTime: 30 * 60 * 1000 // 30 minutes
+    }
   );
 
   if (isLoading) return <div>⏳ Loading...</div>;
@@ -144,12 +147,12 @@ function UserProfile({ userId }) {
 const options = {
   ttl: 24 * 60 * 60 * 1000, // TTL in milliseconds
   syncAcrossTabs: true, // Cross-tab synchronization
-  version: '1.0.0', // Version for migration
+  version: "1.0.0", // Version for migration
   serialize: JSON.stringify, // Custom serialization
-  deserialize: JSON.parse, // Custom deserialization
+  deserialize: JSON.parse // Custom deserialization
 };
 
-const [data, { setValue }] = useLocalStorage('key', defaultValue, options);
+const [data, { setValue }] = useLocalStorage("key", defaultValue, options);
 ```
 
 ## 📱 Practical Examples
@@ -157,7 +160,7 @@ const [data, { setValue }] = useLocalStorage('key', defaultValue, options);
 ### Object Management
 
 ```tsx
-import { useLocalStorageObject } from 'react-hooks-localstorage';
+import { useLocalStorageObject } from "react-hooks-localstorage";
 
 function UserProfile() {
   const {
@@ -165,23 +168,23 @@ function UserProfile() {
     setProperty,
     updateObject,
     hasProperty,
-    resetObject,
-  } = useLocalStorageObject('user-profile', {
-    name: '',
-    email: '',
-    age: 0,
+    resetObject
+  } = useLocalStorageObject("user-profile", {
+    name: "",
+    email: "",
+    age: 0
   });
 
   return (
     <div>
       <input
         value={user.name}
-        onChange={(e) => setProperty('name', e.target.value)}
+        onChange={(e) => setProperty("name", e.target.value)}
         placeholder="Name"
       />
       <input
         value={user.email}
-        onChange={(e) => setProperty('email', e.target.value)}
+        onChange={(e) => setProperty("email", e.target.value)}
         placeholder="Email"
       />
       <button onClick={() => updateObject({ age: user.age + 1 })}>
@@ -196,20 +199,20 @@ function UserProfile() {
 ### Boolean Toggle
 
 ```tsx
-import { useLocalStorageBoolean } from 'react-hooks-localstorage';
+import { useLocalStorageBoolean } from "react-hooks-localstorage";
 
 function ThemeToggle() {
   const {
     value: isDarkMode,
     toggle,
     setTrue,
-    setFalse,
-  } = useLocalStorageBoolean('dark-mode', false);
+    setFalse
+  } = useLocalStorageBoolean("dark-mode", false);
 
   return (
     <div>
       <button onClick={toggle}>
-        {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+        {isDarkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
       </button>
       <button onClick={setTrue}>Force Dark</button>
       <button onClick={setFalse}>Force Light</button>
@@ -221,7 +224,7 @@ function ThemeToggle() {
 ### Number Operations
 
 ```tsx
-import { useLocalStorageNumber } from 'react-hooks-localstorage';
+import { useLocalStorageNumber } from "react-hooks-localstorage";
 
 function Counter() {
   const {
@@ -231,8 +234,8 @@ function Counter() {
     multiply,
     divide,
     reset,
-    clamp,
-  } = useLocalStorageNumber('counter', 0);
+    clamp
+  } = useLocalStorageNumber("counter", 0);
 
   return (
     <div>
@@ -252,17 +255,17 @@ function Counter() {
 ### Cross-Component Synchronization
 
 ```tsx
-import { useLocalStorageSync } from 'react-hooks-localstorage';
+import { useLocalStorageSync } from "react-hooks-localstorage";
 
 function ComponentA() {
   const { value, setValue, subscribe } = useLocalStorageSync(
-    'shared-data',
-    'initial',
+    "shared-data",
+    "initial"
   );
 
   useEffect(() => {
     const unsubscribe = subscribe((newValue) => {
-      console.log('Data updated:', newValue);
+      console.log("Data updated:", newValue);
     });
     return unsubscribe;
   }, [subscribe]);
@@ -271,7 +274,7 @@ function ComponentA() {
 }
 
 function ComponentB() {
-  const { value, setValue } = useLocalStorageSync('shared-data', 'initial');
+  const { value, setValue } = useLocalStorageSync("shared-data", "initial");
 
   return <div>Shared value: {value}</div>;
 }
@@ -284,27 +287,10 @@ function ComponentB() {
 - **Browsers**: All modern browsers
 - **SSR**: Next.js, Gatsby, Nuxt.js
 
-## 🧪 Testing
-
-```bash
-npm test
-```
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://choosealicense.com/licenses/mit/) file for details.
-
-## 🙏 Acknowledgments
-
-- Inspired by the React community
-- Based on popular community patterns
-- Focused on developer experience
+This project is licensed under the MIT License - see the
+[LICENSE](https://choosealicense.com/licenses/mit/) file for details.
 
 ---
 

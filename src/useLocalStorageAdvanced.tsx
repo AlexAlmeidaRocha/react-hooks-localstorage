@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useLocalStorage } from './useLocalStorage';
-import { LocalStorageOptions } from './localStorage.types';
-import { localStorageManager } from './localStorage.utils';
+import { useCallback, useState } from "react";
+
+import { LocalStorageOptions } from "./localStorage.types";
+import { localStorageManager } from "./localStorage.utils";
+import { useLocalStorage } from "./useLocalStorage";
 
 /**
  * Hook for managing arrays in localStorage with array-specific methods
@@ -9,7 +10,7 @@ import { localStorageManager } from './localStorage.utils';
 export function useLocalStorageArray<T>(
   key: string,
   initialValue: T[] = [],
-  options: LocalStorageOptions = {},
+  options: LocalStorageOptions = {}
 ) {
   const [array, { setValue, removeValue, refreshValue, ...methods }] =
     useLocalStorage<T[]>(key, initialValue, options);
@@ -18,35 +19,35 @@ export function useLocalStorageArray<T>(
     (item: T) => {
       setValue((prev) => [...prev, item]);
     },
-    [setValue],
+    [setValue]
   );
 
   const removeItem = useCallback(
     (index: number) => {
       setValue((prev) => prev.filter((_, i) => i !== index));
     },
-    [setValue],
+    [setValue]
   );
 
   const removeItemByValue = useCallback(
     (item: T) => {
       setValue((prev) => prev.filter((i) => i !== item));
     },
-    [setValue],
+    [setValue]
   );
 
   const updateItem = useCallback(
     (index: number, newItem: T) => {
       setValue((prev) => prev.map((item, i) => (i === index ? newItem : item)));
     },
-    [setValue],
+    [setValue]
   );
 
   const insertItem = useCallback(
     (index: number, item: T) => {
       setValue((prev) => [...prev.slice(0, index), item, ...prev.slice(index)]);
     },
-    [setValue],
+    [setValue]
   );
 
   const moveItem = useCallback(
@@ -55,10 +56,11 @@ export function useLocalStorageArray<T>(
         const newArray = [...prev];
         const item = newArray.splice(fromIndex, 1)[0];
         newArray.splice(toIndex, 0, item);
+
         return newArray;
       });
     },
-    [setValue],
+    [setValue]
   );
 
   const clearArray = useCallback(() => {
@@ -69,14 +71,14 @@ export function useLocalStorageArray<T>(
     (predicate: (item: T) => boolean): T | undefined => {
       return array.find(predicate);
     },
-    [array],
+    [array]
   );
 
   const findIndex = useCallback(
     (predicate: (item: T) => boolean): number => {
       return array.findIndex(predicate);
     },
-    [array],
+    [array]
   );
 
   return {
@@ -95,17 +97,17 @@ export function useLocalStorageArray<T>(
     isEmpty: array.length === 0,
     removeValue,
     refreshValue,
-    ...methods,
+    ...methods
   };
 }
 
 /**
  * Hook for managing objects in localStorage with object-specific methods
  */
-export function useLocalStorageObject<T extends Record<string, any>>(
+export function useLocalStorageObject<T extends Record<string, unknown>>(
   key: string,
   initialValue: T,
-  options: LocalStorageOptions = {},
+  options: LocalStorageOptions = {}
 ) {
   const [object, { setValue, removeValue, refreshValue, ...methods }] =
     useLocalStorage<T>(key, initialValue, options);
@@ -114,7 +116,7 @@ export function useLocalStorageObject<T extends Record<string, any>>(
     <K extends keyof T>(property: K, value: T[K]) => {
       setValue((prev) => ({ ...prev, [property]: value }));
     },
-    [setValue],
+    [setValue]
   );
 
   const removeProperty = useCallback(
@@ -122,17 +124,18 @@ export function useLocalStorageObject<T extends Record<string, any>>(
       setValue((prev) => {
         const newObj = { ...prev };
         delete newObj[property];
+
         return newObj;
       });
     },
-    [setValue],
+    [setValue]
   );
 
   const updateObject = useCallback(
     (updates: Partial<T>) => {
       setValue((prev) => ({ ...prev, ...updates }));
     },
-    [setValue],
+    [setValue]
   );
 
   const resetObject = useCallback(() => {
@@ -143,14 +146,14 @@ export function useLocalStorageObject<T extends Record<string, any>>(
     <K extends keyof T>(property: K): boolean => {
       return property in object;
     },
-    [object],
+    [object]
   );
 
   const getProperty = useCallback(
     <K extends keyof T>(property: K): T[K] => {
       return object[property];
     },
-    [object],
+    [object]
   );
 
   return {
@@ -167,7 +170,7 @@ export function useLocalStorageObject<T extends Record<string, any>>(
     entries: Object.entries(object) as Array<[keyof T, T[keyof T]]>,
     removeValue,
     refreshValue,
-    ...methods,
+    ...methods
   };
 }
 
@@ -177,7 +180,7 @@ export function useLocalStorageObject<T extends Record<string, any>>(
 export function useLocalStorageBoolean(
   key: string,
   initialValue: boolean = false,
-  options: LocalStorageOptions = {},
+  options: LocalStorageOptions = {}
 ) {
   const [value, { setValue, removeValue, refreshValue, ...methods }] =
     useLocalStorage<boolean>(key, initialValue, options);
@@ -202,7 +205,7 @@ export function useLocalStorageBoolean(
     setFalse,
     removeValue,
     refreshValue,
-    ...methods,
+    ...methods
   };
 }
 
@@ -212,7 +215,7 @@ export function useLocalStorageBoolean(
 export function useLocalStorageNumber(
   key: string,
   initialValue: number = 0,
-  options: LocalStorageOptions = {},
+  options: LocalStorageOptions = {}
 ) {
   const [value, { setValue, removeValue, refreshValue, ...methods }] =
     useLocalStorage<number>(key, initialValue, options);
@@ -221,28 +224,28 @@ export function useLocalStorageNumber(
     (step: number = 1) => {
       setValue((prev) => prev + step);
     },
-    [setValue],
+    [setValue]
   );
 
   const decrement = useCallback(
     (step: number = 1) => {
       setValue((prev) => prev - step);
     },
-    [setValue],
+    [setValue]
   );
 
   const multiply = useCallback(
     (factor: number) => {
       setValue((prev) => prev * factor);
     },
-    [setValue],
+    [setValue]
   );
 
   const divide = useCallback(
     (divisor: number) => {
       setValue((prev) => (divisor !== 0 ? prev / divisor : prev));
     },
-    [setValue],
+    [setValue]
   );
 
   const reset = useCallback(() => {
@@ -253,21 +256,21 @@ export function useLocalStorageNumber(
     (min: number) => {
       setValue((prev) => Math.max(prev, min));
     },
-    [setValue],
+    [setValue]
   );
 
   const setMax = useCallback(
     (max: number) => {
       setValue((prev) => Math.min(prev, max));
     },
-    [setValue],
+    [setValue]
   );
 
   const clamp = useCallback(
     (min: number, max: number) => {
       setValue((prev) => Math.max(min, Math.min(max, prev)));
     },
-    [setValue],
+    [setValue]
   );
 
   return {
@@ -283,7 +286,7 @@ export function useLocalStorageNumber(
     clamp,
     removeValue,
     refreshValue,
-    ...methods,
+    ...methods
   };
 }
 
@@ -292,7 +295,7 @@ export function useLocalStorageNumber(
  */
 export function useLocalStorageMultiple<T extends Record<string, any>>(
   keys: T,
-  options: LocalStorageOptions = {},
+  options: LocalStorageOptions = {}
 ) {
   const [values, setValuesState] = useState<T>(() => {
     const initialValues = {} as T;
@@ -310,7 +313,7 @@ export function useLocalStorageMultiple<T extends Record<string, any>>(
       setValuesState((prev) => ({ ...prev, [key]: value }));
       localStorageManager.setItem(key as string, value, options);
     },
-    [options],
+    [options]
   );
 
   const setValues = useCallback(
@@ -321,7 +324,7 @@ export function useLocalStorageMultiple<T extends Record<string, any>>(
         localStorageManager.setItem(key, value, options);
       }
     },
-    [options],
+    [options]
   );
 
   const removeValue = useCallback(
@@ -329,7 +332,7 @@ export function useLocalStorageMultiple<T extends Record<string, any>>(
       setValuesState((prev) => ({ ...prev, [key]: keys[key] }));
       localStorageManager.removeItem(key as string);
     },
-    [keys],
+    [keys]
   );
 
   const removeAll = useCallback(() => {
@@ -357,6 +360,6 @@ export function useLocalStorageMultiple<T extends Record<string, any>>(
     setValues,
     removeValue,
     removeAll,
-    refreshValues,
+    refreshValues
   };
 }
