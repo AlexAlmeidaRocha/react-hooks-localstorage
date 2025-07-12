@@ -73,7 +73,7 @@ describe("LocalStorageManager", () => {
 
   describe("setItem", () => {
     it("should store item successfully", () => {
-      const result = manager.setItem("testKey", "testValue");
+      const result = manager.setItem("testKey", "testValue", {});
 
       expect(result).toBe(true);
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
@@ -97,7 +97,7 @@ describe("LocalStorageManager", () => {
       // @ts-expect-error - Testing missing localStorage
       delete window.localStorage;
 
-      const result = manager.setItem("testKey", "testValue");
+      const result = manager.setItem("testKey", "testValue", {});
       expect(result).toBe("unavailable");
     });
 
@@ -105,7 +105,7 @@ describe("LocalStorageManager", () => {
       const circularObj: { self?: unknown } = { self: null };
       circularObj.self = circularObj;
 
-      const result = manager.setItem("testKey", circularObj);
+      const result = manager.setItem("testKey", circularObj, {});
 
       expect(result).toBe(false);
       expect(mockOnError).toHaveBeenCalledWith(

@@ -1,6 +1,6 @@
 {
   "name": "react-hooks-localstorage",
-  "version": "1.2.0",
+  "version": "1.3.1",
   "description": "Complete React hooks library for localStorage with TTL, encryption, caching, sync, and advanced utilities.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
