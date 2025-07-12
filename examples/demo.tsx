@@ -367,6 +367,61 @@ export function UtilitiesExample() {
   );
 }
 
+// Example: Encrypted data storage
+export function EncryptedExample() {
+  const [sensitiveData, { setValue, removeValue, isExpired }] = useLocalStorage(
+    "encrypted-user-data",
+    {
+      ssn: "",
+      creditCard: "",
+      password: ""
+    },
+    {
+      autoEncrypt: true,
+      secretKey: "my-secret-key-123",
+      ttl: 300000 // 5 minutes
+    }
+  );
+
+  return (
+    <div className="example-container">
+      <h2>Encrypted LocalStorage Hook</h2>
+      <div>
+        <input
+          type="text"
+          value={sensitiveData.ssn}
+          onChange={(e) => setValue({ ...sensitiveData, ssn: e.target.value })}
+          placeholder="SSN"
+        />
+        <input
+          type="text"
+          value={sensitiveData.creditCard}
+          onChange={(e) =>
+            setValue({ ...sensitiveData, creditCard: e.target.value })
+          }
+          placeholder="Credit Card"
+        />
+        <input
+          type="password"
+          value={sensitiveData.password}
+          onChange={(e) =>
+            setValue({ ...sensitiveData, password: e.target.value })
+          }
+          placeholder="Password"
+        />
+        <button onClick={removeValue}>Clear Encrypted Data</button>
+      </div>
+      <div className="info">
+        <p>SSN: {sensitiveData.ssn}</p>
+        <p>Credit Card: {sensitiveData.creditCard}</p>
+        <p>Password: {sensitiveData.password ? "***" : ""}</p>
+        <p>Expired: {isExpired() ? "Yes" : "No"}</p>
+        <p>Note: Data is automatically encrypted in localStorage!</p>
+      </div>
+    </div>
+  );
+}
+
 // Main demo component
 export function LocalStorageDemo() {
   return (
@@ -381,6 +436,7 @@ export function LocalStorageDemo() {
         <NumberExample />
         <CacheExample />
         <UtilitiesExample />
+        <EncryptedExample />
       </div>
 
       <style>{`

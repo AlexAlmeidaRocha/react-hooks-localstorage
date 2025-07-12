@@ -7,6 +7,8 @@ export type ExpiringLocalStorageValue<T> = {
 
 export type LocalStorageOptions<T = unknown> = {
   ttl?: number; // Time to live in milliseconds
+  autoEncrypt?: boolean;
+  secretKey?: string; // For encryption, if autoEncrypt is true
   serialize?: (value: T) => string;
   deserialize?: (value: string) => T;
   syncAcrossTabs?: boolean;

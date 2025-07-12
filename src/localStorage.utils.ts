@@ -1,4 +1,6 @@
 /* eslint-disable no-console */
+import * as CryptoJS from "crypto-js";
+
 import {
   ExpiringLocalStorageValue,
   LocalStorageError,
@@ -45,19 +47,35 @@ export class LocalStorageManager {
     return JSON.parse(value);
   }
 
+  private encrypt<T>(data: T, secretKey: string): string {
+    const stringified = JSON.stringify(data);
+
+    return CryptoJS.AES.encrypt(stringified, secretKey).toString();
+  }
+
+  private decrypt<T>(cipher: string, secretKey: string): T {
+    try {
+      const bytes = CryptoJS.AES.decrypt(cipher, secretKey);
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+
+      return JSON.parse(decrypted);
+    } catch (error) {
+      throw new Error(`Failed to decrypt data: ${error}`);
+    }
+  }
+
   /**
    * Set a value in localStorage with optional TTL
    */
   setItem<T>(
     key: string,
     value: T,
-    options: LocalStorageOptions = {}
+    options: LocalStorageOptions<T>
   ): boolean | "unavailable" {
     if (typeof window === "undefined" || !window.localStorage)
       return "unavailable";
 
     try {
-      const serialize = options.serialize || this.defaultSerialize;
       const expiresAt = options.ttl ? Date.now() + options.ttl : null;
 
       const dataToStore: ExpiringLocalStorageValue<T> = {
@@ -67,7 +85,23 @@ export class LocalStorageManager {
         version: options.version || this.version
       };
 
-      const serializedData = serialize(dataToStore);
+      let serializedData: string;
+
+      if (options.autoEncrypt && options.secretKey) {
+        // Use encryption - serialize the data and then encrypt it
+        const serializedForEncryption = options.serialize
+          ? options.serialize(dataToStore as T)
+          : this.defaultSerialize(dataToStore);
+        serializedData = this.encrypt(
+          serializedForEncryption,
+          options.secretKey
+        );
+      } else {
+        // Use normal serialization
+        const serialize = options.serialize || this.defaultSerialize;
+        serializedData = serialize(dataToStore as T);
+      }
+
       window.localStorage.setItem(this.getKey(key), serializedData);
 
       // Dispatch custom event for cross-tab synchronization
@@ -96,15 +130,33 @@ export class LocalStorageManager {
   /**
    * Get a value from localStorage with expiration check
    */
-  getItem<T>(key: string, options: LocalStorageOptions = {}): T | null {
+  getItem<T>(
+    key: string,
+    options: LocalStorageOptions<T> = {} as LocalStorageOptions<T>
+  ): T | null {
     if (typeof window === "undefined") return null;
 
     try {
       const item = window.localStorage.getItem(this.getKey(key));
       if (!item) return null;
 
-      const deserialize = options.deserialize || this.defaultDeserialize;
-      const data = deserialize(item) as ExpiringLocalStorageValue<T>;
+      let data: ExpiringLocalStorageValue<T>;
+
+      if (options.autoEncrypt && options.secretKey) {
+        // Decrypt the data first, then deserialize
+        const decryptedData = this.decrypt(item, options.secretKey);
+        data = options.deserialize
+          ? (options.deserialize(
+              decryptedData as string
+            ) as ExpiringLocalStorageValue<T>)
+          : (this.defaultDeserialize(
+              decryptedData as string
+            ) as ExpiringLocalStorageValue<T>);
+      } else {
+        // Use normal deserialization
+        const deserialize = options.deserialize || this.defaultDeserialize;
+        data = deserialize(item as string) as ExpiringLocalStorageValue<T>;
+      }
 
       // Check if item has expired
       if (data.expiresAt && Date.now() > data.expiresAt) {
