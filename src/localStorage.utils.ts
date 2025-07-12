@@ -262,9 +262,20 @@ export class LocalStorageManager {
     const keys = this.getAllKeys();
 
     keys.forEach((key) => {
-      const item = this.getItem(key);
+      try {
+        const rawItem = window.localStorage.getItem(this.getKey(key));
+        if (!rawItem) return;
 
-      if (item === null) {
+        const data = JSON.parse(rawItem) as ExpiringLocalStorageValue<unknown>;
+
+        // Check if item has expired
+        if (data.expiresAt && Date.now() > data.expiresAt) {
+          this.removeItem(key);
+          cleanedCount++;
+        }
+      } catch {
+        // If we can't parse the item, it's corrupted, so remove it
+        this.removeItem(key);
         cleanedCount++;
       }
     });
