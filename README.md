@@ -14,6 +14,8 @@ much more.
 - 🔄 **Cross-tab synchronization** - Changes automatically reflected across all
   tabs
 - ⏰ **TTL (Time To Live)** - Automatic data expiration
+- 🔐 **Auto-encryption** - Secure data storage with automatic
+  encryption/decryption
 - 🎯 **Specialized hooks** - For arrays, objects, booleans, numbers
 - 📦 **Smart caching** - For APIs and expensive computations
 - 🛠️ **Advanced utilities** - Automatic cleanup, monitoring, backup
@@ -149,11 +151,39 @@ const options = {
   syncAcrossTabs: true, // Cross-tab synchronization
   version: "1.0.0", // Version for migration
   serialize: JSON.stringify, // Custom serialization
-  deserialize: JSON.parse // Custom deserialization
+  deserialize: JSON.parse, // Custom deserialization
+
+  // 🔐 Encryption options (NEW!)
+  autoEncrypt: true, // Enable automatic encryption
+  secretKey: "your-secret-key" // Required when autoEncrypt is true
 };
 
 const [data, { setValue }] = useLocalStorage("key", defaultValue, options);
 ```
+
+### 🔒 Encryption Configuration
+
+When `autoEncrypt` is enabled, all data is automatically encrypted before
+storing and decrypted when retrieving:
+
+```tsx
+// ✅ Secure - data is encrypted
+const [secrets, actions] = useLocalStorage(
+  "app-secrets",
+  { apiKey: "", token: "" },
+  {
+    autoEncrypt: true,
+    secretKey: process.env.REACT_APP_ENCRYPTION_KEY,
+    ttl: 30 * 60 * 1000 // 30 minutes for sensitive data
+  }
+);
+```
+
+**Security Notes:**
+
+- The `secretKey` should be stored securely (environment variables recommended)
+- Encrypted data has a small performance overhead
+- TTL is especially recommended for encrypted sensitive data
 
 ## 📱 Practical Examples
 
@@ -277,6 +307,54 @@ function ComponentB() {
   const { value, setValue } = useLocalStorageSync("shared-data", "initial");
 
   return <div>Shared value: {value}</div>;
+}
+```
+
+### 🔐 Encrypted Storage (NEW!)
+
+Store sensitive data with automatic encryption:
+
+```tsx
+import { useLocalStorage } from "react-hooks-localstorage";
+
+function SecureComponent() {
+  const [sensitiveData, { setValue, removeValue }] = useLocalStorage(
+    "user-credentials",
+    { username: "", password: "", ssn: "" },
+    {
+      autoEncrypt: true,
+      secretKey: "your-secret-key-here",
+      ttl: 15 * 60 * 1000 // 15 minutes for security
+    }
+  );
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={sensitiveData.username}
+        onChange={(e) =>
+          setValue({
+            ...sensitiveData,
+            username: e.target.value
+          })
+        }
+        placeholder="Username"
+      />
+      <input
+        type="password"
+        value={sensitiveData.password}
+        onChange={(e) =>
+          setValue({
+            ...sensitiveData,
+            password: e.target.value
+          })
+        }
+        placeholder="Password"
+      />
+      <p>✅ Data is automatically encrypted in localStorage!</p>
+    </div>
+  );
 }
 ```
 

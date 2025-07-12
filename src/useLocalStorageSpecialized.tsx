@@ -9,7 +9,7 @@ import { useLocalStorage } from "./useLocalStorage";
 export function useLocalStorageCache<T>(
   key: string,
   fetcher: () => Promise<T>,
-  options: LocalStorageOptions & {
+  options: LocalStorageOptions<T | null> & {
     staleTime?: number; // Time in ms after which data is considered stale
     cacheTime?: number; // Time in ms to keep data in cache (overrides TTL)
     refetchOnMount?: boolean;
@@ -132,7 +132,7 @@ export function useLocalStorageCache<T>(
 export function useLocalStorageSync<T>(
   key: string,
   initialValue: T,
-  options: LocalStorageOptions = {}
+  options: LocalStorageOptions<T> = {}
 ) {
   const [value, { setValue, ...methods }] = useLocalStorage<T>(
     key,
@@ -182,11 +182,11 @@ export function useLocalStorageSync<T>(
 export function useLocalStorageCompressed<T>(
   key: string,
   initialValue: T,
-  options: LocalStorageOptions = {}
+  options: LocalStorageOptions<T> = {}
 ) {
-  const compressedOptions: LocalStorageOptions = {
+  const compressedOptions: LocalStorageOptions<T> = {
     ...options,
-    serialize: (value: unknown) => {
+    serialize: (value: T) => {
       const jsonString = JSON.stringify(value);
       // Simple compression simulation (in real app, use a proper compression library)
 

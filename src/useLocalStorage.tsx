@@ -10,7 +10,7 @@ import { localStorageManager } from "./localStorage.utils";
 export function useLocalStorage<T>(
   key: string,
   initialValue: T,
-  options: LocalStorageOptions = {}
+  options: LocalStorageOptions<T> = {}
 ): UseLocalStorageReturn<T> {
   const isBrowser = typeof window !== "undefined";
   const optionsRef = useRef(options);
@@ -176,7 +176,7 @@ export function useLocalStorage<T>(
 
   // Auto-cleanup expired items (optional)
   useEffect(() => {
-    if (!isBrowser || !options.ttl) return;
+    if (!isBrowser || !options?.ttl) return;
 
     const interval = setInterval(
       () => {
@@ -201,7 +201,7 @@ export function useLocalStorage<T>(
     ); // Check every 1/10 of TTL or max 1 minute
 
     return () => clearInterval(interval);
-  }, [options.ttl, key, initialValue, isBrowser]);
+  }, [options?.ttl, key, initialValue, isBrowser]);
 
   return [
     storedValue,

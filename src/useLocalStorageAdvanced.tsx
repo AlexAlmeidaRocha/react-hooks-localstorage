@@ -10,7 +10,7 @@ import { useLocalStorage } from "./useLocalStorage";
 export function useLocalStorageArray<T>(
   key: string,
   initialValue: T[] = [],
-  options: LocalStorageOptions = {}
+  options: LocalStorageOptions<T[]> = {}
 ) {
   const [array, { setValue, removeValue, refreshValue, ...methods }] =
     useLocalStorage<T[]>(key, initialValue, options);
@@ -107,7 +107,7 @@ export function useLocalStorageArray<T>(
 export function useLocalStorageObject<T extends Record<string, unknown>>(
   key: string,
   initialValue: T,
-  options: LocalStorageOptions = {}
+  options: LocalStorageOptions<T> = {}
 ) {
   const [object, { setValue, removeValue, refreshValue, ...methods }] =
     useLocalStorage<T>(key, initialValue, options);
@@ -180,7 +180,7 @@ export function useLocalStorageObject<T extends Record<string, unknown>>(
 export function useLocalStorageBoolean(
   key: string,
   initialValue: boolean = false,
-  options: LocalStorageOptions = {}
+  options: LocalStorageOptions<boolean> = {}
 ) {
   const [value, { setValue, removeValue, refreshValue, ...methods }] =
     useLocalStorage<boolean>(key, initialValue, options);
@@ -215,7 +215,7 @@ export function useLocalStorageBoolean(
 export function useLocalStorageNumber(
   key: string,
   initialValue: number = 0,
-  options: LocalStorageOptions = {}
+  options: LocalStorageOptions<number> = {}
 ) {
   const [value, { setValue, removeValue, refreshValue, ...methods }] =
     useLocalStorage<number>(key, initialValue, options);
@@ -293,16 +293,17 @@ export function useLocalStorageNumber(
 /**
  * Hook for managing multiple localStorage keys as a single state
  */
-export function useLocalStorageMultiple<T extends Record<string, any>>(
+export function useLocalStorageMultiple<T extends Record<string, unknown>>(
   keys: T,
-  options: LocalStorageOptions = {}
+  options: LocalStorageOptions<unknown> = {}
 ) {
   const [values, setValuesState] = useState<T>(() => {
     const initialValues = {} as T;
 
     for (const [key, initialValue] of Object.entries(keys)) {
-      initialValues[key as keyof T] =
-        localStorageManager.getItem(key, options) ?? initialValue;
+      const storedValue = localStorageManager.getItem(key, options);
+      (initialValues as Record<string, unknown>)[key] =
+        storedValue ?? initialValue;
     }
 
     return initialValues;
@@ -347,8 +348,8 @@ export function useLocalStorageMultiple<T extends Record<string, any>>(
     const newValues = {} as T;
 
     for (const [key, initialValue] of Object.entries(keys)) {
-      newValues[key as keyof T] =
-        localStorageManager.getItem(key, options) ?? initialValue;
+      const storedValue = localStorageManager.getItem(key, options);
+      (newValues as Record<string, unknown>)[key] = storedValue ?? initialValue;
     }
 
     setValuesState(newValues);
